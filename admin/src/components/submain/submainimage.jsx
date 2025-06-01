@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "../home/home.css";
 
 const API_ORIGIN = "http://localhost:5000";
 
-const submainimage = () => {
+const SubMainImage = () => {
   const location = useLocation();
   const { categoryName, productId } = location.state || {};
-  console.log(productId, categoryName);
 
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -31,7 +30,7 @@ const submainimage = () => {
         console.error("Error fetching products:", err);
       }
     })();
-  }, []);
+  }, [productId]);
 
   const openAdd = () => {
     setEditingId(null);
@@ -40,7 +39,7 @@ const submainimage = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData((p) => ({ ...p, imageFile: e.target.files[0] || null }));
+    setFormData((prev) => ({ ...prev, imageFile: e.target.files[0] || null }));
   };
 
   const handleDelete = async (_id) => {
@@ -49,7 +48,9 @@ const submainimage = () => {
     try {
       const res = await fetch(
         `${API_ORIGIN}/api/subproducts/deleteSubProductImage/${_id}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+        }
       );
       const json = await res.json();
       if (!json.success) throw new Error("Delete failed");
@@ -62,20 +63,20 @@ const submainimage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading at the start
+    setLoading(true);
 
     let imageUrl = "";
 
-    // Step 1: Upload image to Cloudinary if selected
+    // Upload to Cloudinary
     if (formData.imageFile) {
       const cloudinaryData = new FormData();
       cloudinaryData.append("file", formData.imageFile);
-      cloudinaryData.append("upload_preset", "Project"); // Replace with your actual preset
-      cloudinaryData.append("cloud_name", "dlxhhxkdg"); // Replace with your Cloudinary name
+      cloudinaryData.append("upload_preset", "kw7egjc8");
+      cloudinaryData.append("cloud_name", "dzw7kcrs4");
 
       try {
         const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dlxhhxkdg/image/upload",
+          "https://api.cloudinary.com/v1_1/dzw7kcrs4/image/upload",
           {
             method: "POST",
             body: cloudinaryData,
@@ -91,27 +92,27 @@ const submainimage = () => {
       } catch (err) {
         console.error("Cloudinary Upload Error:", err);
         alert("Image upload failed: " + err.message);
+        setLoading(false);
         return;
       }
     }
 
-    // Step 2: Submit subproduct data to your backend
+    // Submit to backend
     const payload = {
-      image: imageUrl, // Cloudinary image URL
+      image: imageUrl,
       subProduct: productId,
     };
 
+    console.log("Payload:", editingId);
     const url = editingId
-      ? `${API_ORIGIN}/api/subproducts/updateSubProduct/${editingId}`
+      ? `${API_ORIGIN}/api/subproducts/updateSubProductImage/${editingId}`
       : `${API_ORIGIN}/api/subproducts/uploadSubProductImage`;
     const method = editingId ? "PUT" : "POST";
 
     try {
       const res = await fetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -119,20 +120,19 @@ const submainimage = () => {
       if (!res.ok) throw new Error(json.message || "Save failed");
 
       const saved = json.data;
-      setProducts((prev) => {
-        return editingId
+      setProducts((prev) =>
+        editingId
           ? prev.map((p) => (p._id === editingId ? saved : p))
-          : [...prev, saved];
-      });
+          : [...prev, saved]
+      );
 
-      // Reset form
       setShowForm(false);
       setEditingId(null);
       setFormData({ imageFile: null });
-      setLoading(false); // Set loading at the end
     } catch (err) {
-      setLoading(false); // Set loading at the start
       alert(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -161,27 +161,31 @@ const submainimage = () => {
                 style={{ backgroundImage: `url(${imgSrc})` }}
               />
               <div className="card-content">
-                <h3>{prod.name}</h3>
-                <p>{prod.description}</p>
-
                 <div className="card-buttons">
+                  <button
+                    className="edit-btn"
+                    onClick={() => {
+                      setEditingId(prod._id);
+                      setShowForm(true);
+                    }}
+                  >
+                    Edit
+                  </button>
                   <button
                     className="delete-btn"
                     onClick={() => handleDelete(prod._id)}
                   >
                     Delete
-                  </button>{" "}
+                  </button>
                 </div>
               </div>
             </div>
           );
         })}
 
-        {products.length === 0 && (
-          <div className="subcategory-card add-card" onClick={openAdd}>
-            <div className="add-icon">+</div>
-          </div>
-        )}
+        <div className="subcategory-card add-card" onClick={openAdd}>
+          <div className="add-icon">+</div>
+        </div>
       </div>
 
       {showForm && (
@@ -197,6 +201,29 @@ const submainimage = () => {
               </button>
             </div>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
+              {editingId && (
+                <div style={{ marginBottom: "10px" }}>
+                  <strong>Current Image:</strong>
+                  <img
+                    src={
+                      products
+                        .find((p) => p._id === editingId)
+                        ?.image.startsWith("http")
+                        ? products.find((p) => p._id === editingId)?.image
+                        : `${API_ORIGIN}${
+                            products.find((p) => p._id === editingId)?.image
+                          }`
+                    }
+                    alt="Current"
+                    style={{
+                      width: "100%",
+                      maxHeight: "200px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+              )}
+
               <div className="form-group">
                 <label>Image File:</label>
                 <input
@@ -204,10 +231,10 @@ const submainimage = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  // required only when adding
                   required={!editingId}
                 />
               </div>
+
               <div className="form-actions">
                 <button
                   type="button"
@@ -232,4 +259,4 @@ const submainimage = () => {
   );
 };
 
-export default submainimage;
+export default SubMainImage;

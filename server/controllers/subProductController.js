@@ -145,7 +145,7 @@ export const createSubProductImage = async (req, res) => {
 // Update subproduct
 export const updateSubProduct = async (req, res) => {
   try {
-    const { name, description, product } = req.body;
+    const { name, description, product, image } = req.body;
 
     const subProduct = await SubProduct.findById(req.params.id);
 
@@ -156,20 +156,14 @@ export const updateSubProduct = async (req, res) => {
       });
     }
 
-    // Update fields
-    subProduct.name = name || subProduct.name;
-    subProduct.description = description || subProduct.description;
-    subProduct.product = product || subProduct.product;
+    // Update only the provided fields
+    if (name) subProduct.name = name;
+    if (description) subProduct.description = description;
+    if (product) subProduct.product = product;
 
-    // Update image if provided
-    if (req.file) {
-      // Delete old image
-      const oldImagePath = path.join(__dirname, "..", subProduct.image);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-      }
-
-      subProduct.image = `/uploads/${req.file.filename}`;
+    // Update image only if a new URL is provided and it's different
+    if (image && image !== subProduct.image) {
+      subProduct.image = image;
     }
 
     await subProduct.save();
@@ -180,14 +174,44 @@ export const updateSubProduct = async (req, res) => {
       data: subProduct,
     });
   } catch (error) {
-    // If error occurs, remove uploaded image
-    if (req.file) {
-      fs.unlinkSync(path.join(__dirname, "..", "uploads", req.file.filename));
-    }
-
     res.status(500).json({
       success: false,
       message: "Error updating subproduct",
+      error: error.message,
+    });
+  }
+};
+
+export const updateSubProductImage = async (req, res) => {
+  try {
+    const { image } = req.body;
+
+    // Find image document by its _id
+    const subProductImage = await SubProductImage.findById(req.params.id); // <-- use 'id' instead of 'subProduct'
+
+    if (!subProductImage) {
+      return res.status(404).json({
+        success: false,
+        message: "SubProductImage not found",
+      });
+    }
+
+    // Update only if image is different
+    if (image && image !== subProductImage.image) {
+      subProductImage.image = image;
+    }
+
+    await subProductImage.save();
+
+    res.status(200).json({
+      success: true,
+      message: "SubProductImage updated successfully",
+      data: subProductImage,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error updating subproduct image",
       error: error.message,
     });
   }
@@ -204,13 +228,6 @@ export const deleteSubProduct = async (req, res) => {
         message: "Subproduct not found",
       });
     }
-
-    // Delete image from storage
-    const imagePath = path.join(__dirname, "..", subProduct.image);
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
-    }
-
     await subProduct.deleteOne();
 
     res.status(200).json({

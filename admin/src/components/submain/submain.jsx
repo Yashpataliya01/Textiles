@@ -62,10 +62,11 @@ const submain = () => {
         { method: "DELETE" }
       );
       const json = await res.json();
-      if (!json.success) throw new Error("Delete failed");
+      if (!json.success)
+        throw new Error("Cannot delete product that has item in it");
       setProducts((prev) => prev.filter((p) => p._id !== _id));
     } catch (err) {
-      console.error("Delete error:", err);
+      console.error("Delete error:", err.message);
       alert("Could not delete product");
     }
   };
@@ -90,12 +91,12 @@ const submain = () => {
     if (formData.imageFile) {
       const cloudinaryData = new FormData();
       cloudinaryData.append("file", formData.imageFile);
-      cloudinaryData.append("upload_preset", "Project"); // Replace with your actual preset
-      cloudinaryData.append("cloud_name", "dlxhhxkdg"); // Replace with your Cloudinary name
+      cloudinaryData.append("upload_preset", "kw7egjc8"); // Replace with your actual preset
+      cloudinaryData.append("cloud_name", "dzw7kcrs4"); // Replace with your Cloudinary name
 
       try {
         const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dlxhhxkdg/image/upload",
+          "https://api.cloudinary.com/v1_1/dzw7kcrs4/image/upload",
           {
             method: "POST",
             body: cloudinaryData,

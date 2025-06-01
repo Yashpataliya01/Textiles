@@ -83,7 +83,7 @@ export const createProduct = async (req, res) => {
 // Update product
 export const updateProduct = async (req, res) => {
   try {
-    const { name, description, category } = req.body;
+    const { name, description, category, image } = req.body;
 
     const product = await Product.findById(req.params.id);
 
@@ -94,20 +94,14 @@ export const updateProduct = async (req, res) => {
       });
     }
 
-    // Update fields
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.category = category || product.category;
+    // Update only the fields that are provided
+    if (name) product.name = name;
+    if (description) product.description = description;
+    if (category) product.category = category;
 
-    // Update image if provided
-    if (req.file) {
-      // Delete old image
-      const oldImagePath = path.join(__dirname, "..", product.image);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-      }
-
-      product.image = `/uploads/${req.file.filename}`;
+    // Update image only if a new URL is provided and different from existing
+    if (image && image !== product.image) {
+      product.image = image;
     }
 
     await product.save();
@@ -118,11 +112,6 @@ export const updateProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    // If error occurs, remove uploaded image
-    if (req.file) {
-      fs.unlinkSync(path.join(__dirname, "..", "uploads", req.file.filename));
-    }
-
     res.status(500).json({
       success: false,
       message: "Error updating product",

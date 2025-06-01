@@ -78,11 +78,11 @@ const Home = () => {
   //     if (formData.image && typeof formData.image !== "string") {
   //       const data = new FormData();
   //       data.append("file", formData.image);
-  //       data.append("upload_preset", "Project"); // Change this
-  //       data.append("cloud_name", "dlxhhxkdg"); // Change this
+  //       data.append("upload_preset", "kw7egjc8"); // Change this
+  //       data.append("cloud_name", "dzw7kcrs4"); // Change this
 
   //       const cloudRes = await fetch(
-  //         "https://api.cloudinary.com/v1_1/dlxhhxkdg/image/upload",
+  //         "https://api.cloudinary.com/v1_1/dzw7kcrs4/image/upload",
   //         {
   //           method: "POST",
   //           body: data,

@@ -22,7 +22,10 @@ function App() {
           <Route path="/main/:id" element={<Main />} />
           <Route path="/main/:id/:id" element={<SubMain />} />
           <Route path="/main/:id/:id/:id" element={<Submainimage />} />
-          <Route path="/blogs" element={<Blogs />} />
+          <Route
+            path="/blogs"
+            element={localStorage.getItem("isLogin") ? <Blogs /> : <Login />}
+          />
         </Routes>
       </main>
     </BrowserRouter>
