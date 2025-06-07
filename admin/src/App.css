@@ -6,10 +6,10 @@
 
 /* Body styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #fff;
-  color: #333;
-  line-height: 1.5;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f8f9fb;
+  margin: 0;
+  padding: 0;
 }
 
 a,

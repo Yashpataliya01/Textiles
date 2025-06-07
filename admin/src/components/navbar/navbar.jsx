@@ -36,6 +36,11 @@ const Navbar = () => {
                 Blogs
               </Link>
             </li>
+            <li>
+              <Link to="/gallery" style={styles.navLink}>
+                Gallery
+              </Link>
+            </li>
           </ul>
         </div>
 

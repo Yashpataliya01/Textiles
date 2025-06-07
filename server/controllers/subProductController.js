@@ -246,18 +246,18 @@ export const deleteSubProductImage = async (req, res) => {
   try {
     const deleteSubProductImage = await SubProductImage.findById(req.params.id);
 
-    if (!SubProductImage) {
+    if (!deleteSubProductImage) {
       return res.status(404).json({
         success: false,
         message: "SubproductImage not found",
       });
     }
 
-    await SubProductImage.deleteOne();
+    await deleteSubProductImage.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: "Subproduct deleted successfully",
+      message: "SubproductImage deleted successfully",
     });
   } catch (error) {
     res.status(500).json({

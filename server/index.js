@@ -7,6 +7,7 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import subProductRoutes from "./routes/subProductRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import galaryRoutes from "./routes/galaryRoutes.js";
 
 // Configuration
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/subproducts", subProductRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/galaries", galaryRoutes);
 
 // Basic route
 app.get("/", (req, res) => {

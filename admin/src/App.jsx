@@ -8,6 +8,7 @@ import SubMain from "./components/submain/submain";
 import Submainimage from "./components/submain/submainimage";
 import Login from "./components/Login.jsx";
 import Blogs from "./components/Blogs/Blogs.jsx";
+import Gallery from "./components/Gallery/Gallery.jsx";
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
           <Route
             path="/blogs"
             element={localStorage.getItem("isLogin") ? <Blogs /> : <Login />}
+          />
+          <Route
+            path="/gallery"
+            element={localStorage.getItem("isLogin") ? <Gallery /> : <Login />}
           />
         </Routes>
       </main>
