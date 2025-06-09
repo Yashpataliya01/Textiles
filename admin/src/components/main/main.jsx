@@ -8,7 +8,7 @@ const API_ORIGIN = "http://localhost:5000";
 const Main = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { categoryName } = location.state || {};
+  const { categoryName, name } = location.state || {};
 
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -189,7 +189,7 @@ const Main = () => {
   return (
     <div className="home-container">
       <header className="header">
-        <h1>{categoryName}</h1>
+        <h1>{name}</h1>
         <div className="divider">
           <span className="dot" />
           <span className="dot" />

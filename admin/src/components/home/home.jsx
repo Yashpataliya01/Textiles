@@ -4,131 +4,6 @@ import "../main/main.css";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  // const [categories, setCategories] = useState(categoriesCache || []);
-  // const [showForm, setShowForm] = useState(false);
-  // const [formData, setFormData] = useState({ name: "", image: "" });
-  // const [editingId, setEditingId] = useState(null);
-  // const [loading, setLoading] = useState(false);
-  // // Fetch categories once
-  // useEffect(() => {
-  //   if (categoriesCache === null) {
-  //     (async () => {
-  //       try {
-  //         const res = await fetch(
-  //           "http://localhost:5000/api/categories/getCategories"
-  //         );
-  //         const json = await res.json();
-  //         const data = json.data || [];
-  //         categoriesCache = data;
-  //         setCategories(data);
-  //         console.log(data);
-  //       } catch (err) {
-  //         console.error("Error fetching categories:", err);
-  //       }
-  //     })();
-  //   }
-  // }, []);
-
-  // const openAdd = () => {
-  //   setEditingId(null);
-  //   setFormData({ name: "", image: "" });
-  //   setShowForm(true);
-  // };
-
-  // const openEdit = (cat) => {
-  //   setEditingId(cat._id);
-  //   setFormData({ name: cat.name, image: cat.image });
-  //   setShowForm(true);
-  // };
-
-  // const handleDelete = async (_id) => {
-  //   if (!window.confirm("Delete this category?")) return;
-  //   try {
-  //     const res = await fetch(
-  //       `http://localhost:5000/api/categories/deleteCategory/${_id}`,
-  //       { method: "DELETE" }
-  //     );
-  //     const json = await res.json();
-  //     if (!json.success) throw new Error("Delete failed");
-  //     const updated = categories.filter((c) => c._id !== _id);
-  //     categoriesCache = updated;
-  //     setCategories(updated);
-  //   } catch (err) {
-  //     console.error("Delete error:", err);
-  //     alert("Could not delete category");
-  //   }
-  // };
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((p) => ({ ...p, [name]: value }));
-  // };
-
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setFormData((p) => ({ ...p, image: file }));
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     setLoading(true);
-  //     let imageUrl = formData.image;
-  //     // Upload to Cloudinary if file object
-  //     if (formData.image && typeof formData.image !== "string") {
-  //       const data = new FormData();
-  //       data.append("file", formData.image);
-  //       data.append("upload_preset", "kw7egjc8"); // Change this
-  //       data.append("cloud_name", "dzw7kcrs4"); // Change this
-
-  //       const cloudRes = await fetch(
-  //         "https://api.cloudinary.com/v1_1/dzw7kcrs4/image/upload",
-  //         {
-  //           method: "POST",
-  //           body: data,
-  //         }
-  //       );
-
-  //       const cloudData = await cloudRes.json();
-  //       imageUrl = cloudData.secure_url;
-  //     }
-
-  //     const finalFormData = {
-  //       ...formData,
-  //       image: imageUrl,
-  //     };
-
-  //     const url = editingId
-  //       ? `http://localhost:5000/api/categories/updateCategory/${editingId}`
-  //       : "http://localhost:5000/api/categories/createCategory";
-  //     const method = editingId ? "PUT" : "POST";
-
-  //     const res = await fetch(url, {
-  //       method,
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(finalFormData),
-  //     });
-
-  //     const json = await res.json();
-  //     if (!res.ok) throw new Error(json.message || "Save failed");
-
-  //     const cat = json.data;
-  //     const updated = editingId
-  //       ? categories.map((c) => (c._id === editingId ? cat : c))
-  //       : [...categories, cat];
-
-  //     categoriesCache = updated;
-  //     setCategories(updated);
-  //     setShowForm(false);
-  //     setEditingId(null);
-  //     setFormData({ name: "", image: "" });
-  //     setLoading(false);
-  //   } catch (err) {
-  //     console.error("Save error:", err);
-  //     alert(err.message);
-  //   }
-  // };
-
   const data = [
     {
       name: "Suitings",
@@ -173,18 +48,12 @@ const Home = () => {
                 style={{ backgroundColor: c.accentColor || "#333" }}
               />
               <div className="card-buttons">
-                <Link to={`/main/${c._id}`} state={{ categoryName: c._id }}>
+                <Link
+                  to={`/main/${c._id}`}
+                  state={{ categoryName: c._id, name: c.name }}
+                >
                   <button className="view-more-btn">View</button>
                 </Link>
-                {/* <button onClick={() => openEdit(c)} className="edit-btn">
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(c._id)}
-                  className="delete-btn"
-                >
-                  Delete
-                </button> */}
               </div>
             </div>
           </div>
