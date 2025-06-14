@@ -3,7 +3,7 @@ import "./home.css";
 import "../main/main.css";
 import { Link } from "react-router-dom";
 
-const API_ORIGIN = "http://localhost:5000";
+const API_ORIGIN = import.meta.env.VITE_ENCODED_URL;
 
 const Home = () => {
   const [categories, setCategories] = useState([]);

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "../home/home.css";
 
-const API_ORIGIN = "http://localhost:5000";
+const API_ORIGIN = import.meta.env.VITE_ENCODED_URL;
 
 const submain = () => {
   const { id } = useParams();

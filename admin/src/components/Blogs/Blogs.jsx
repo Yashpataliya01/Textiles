@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Blogs.css";
 
-const API_ORIGIN = "http://localhost:5000";
+const API_ORIGIN = import.meta.env.VITE_ENCODED_URL;
 
 const Blogs = () => {
   const [blogData, setBlogData] = useState([]);

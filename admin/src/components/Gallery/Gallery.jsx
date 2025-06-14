@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Gallery.css";
 
-const API_ORIGIN = "http://localhost:5000";
+const API_ORIGIN = import.meta.env.VITE_ENCODED_URL;
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
