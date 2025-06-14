@@ -14,9 +14,10 @@ const SubMainImage = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     imageFile: null,
+    heading: "",
+    description: "",
   });
 
-  // Fetch products once
   useEffect(() => {
     (async () => {
       try {
@@ -34,7 +35,7 @@ const SubMainImage = () => {
 
   const openAdd = () => {
     setEditingId(null);
-    setFormData({ imageFile: null });
+    setFormData({ imageFile: null, heading: "", description: "" });
     setShowForm(true);
   };
 
@@ -48,9 +49,7 @@ const SubMainImage = () => {
     try {
       const res = await fetch(
         `${API_ORIGIN}/api/subproducts/deleteSubProductImage/${_id}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
       const json = await res.json();
       if (!json.success) throw new Error("Delete failed");
@@ -67,7 +66,7 @@ const SubMainImage = () => {
 
     let imageUrl = "";
 
-    // Upload to Cloudinary
+    // Upload image to Cloudinary if a new one is selected
     if (formData.imageFile) {
       const cloudinaryData = new FormData();
       cloudinaryData.append("file", formData.imageFile);
@@ -83,27 +82,24 @@ const SubMainImage = () => {
           }
         );
         const data = await res.json();
-
-        if (!res.ok) {
+        if (!res.ok)
           throw new Error(data.error?.message || "Image upload failed");
-        }
-
         imageUrl = data.secure_url;
       } catch (err) {
-        console.error("Cloudinary Upload Error:", err);
+        console.error("Image Upload Error:", err);
         alert("Image upload failed: " + err.message);
         setLoading(false);
         return;
       }
     }
 
-    // Submit to backend
     const payload = {
-      image: imageUrl,
+      image: imageUrl || products.find((p) => p._id === editingId)?.image,
       subProduct: productId,
+      heading: formData.heading,
+      description: formData.description,
     };
 
-    console.log("Payload:", editingId);
     const url = editingId
       ? `${API_ORIGIN}/api/subproducts/updateSubProductImage/${editingId}`
       : `${API_ORIGIN}/api/subproducts/uploadSubProductImage`;
@@ -115,7 +111,6 @@ const SubMainImage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
       const json = await res.json();
       if (!res.ok) throw new Error(json.message || "Save failed");
 
@@ -128,7 +123,7 @@ const SubMainImage = () => {
 
       setShowForm(false);
       setEditingId(null);
-      setFormData({ imageFile: null });
+      setFormData({ imageFile: null, heading: "", description: "" });
     } catch (err) {
       alert(err.message);
     } finally {
@@ -161,11 +156,19 @@ const SubMainImage = () => {
                 style={{ backgroundImage: `url(${imgSrc})` }}
               />
               <div className="card-content">
+                <h3>{prod.heading}</h3>
+                <p>{prod.description}</p>
                 <div className="card-buttons">
                   <button
                     className="edit-btn"
                     onClick={() => {
+                      const p = products.find((p) => p._id === prod._id);
                       setEditingId(prod._id);
+                      setFormData({
+                        imageFile: null,
+                        heading: p.heading || "",
+                        description: p.description || "",
+                      });
                       setShowForm(true);
                     }}
                   >
@@ -232,6 +235,36 @@ const SubMainImage = () => {
                   accept="image/*"
                   onChange={handleFileChange}
                   required={!editingId}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Heading:</label>
+                <input
+                  type="text"
+                  value={formData.heading}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      heading: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Description:</label>
+                <textarea
+                  rows="3"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  required
                 />
               </div>
 

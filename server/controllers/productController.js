@@ -27,6 +27,7 @@ export const getAllProducts = async (req, res) => {
 
 // Get product by ID
 export const getProductById = async (req, res) => {
+  console.log("Fetching product with ID:", req.params.id);
   try {
     let product = await Product.findById(req.params.id).populate(
       "category",

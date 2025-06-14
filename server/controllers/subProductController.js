@@ -121,11 +121,13 @@ export const createSubProduct = async (req, res) => {
 };
 export const createSubProductImage = async (req, res) => {
   try {
-    const { image, subProduct } = req.body;
+    const { image, subProduct, heading, description } = req.body;
 
     const newSubProductImage = await SubProductImage.create({
       image,
       subProduct,
+      heading,
+      description,
     });
 
     res.status(201).json({
@@ -184,10 +186,10 @@ export const updateSubProduct = async (req, res) => {
 
 export const updateSubProductImage = async (req, res) => {
   try {
-    const { image } = req.body;
+    const { image, heading, description } = req.body;
 
     // Find image document by its _id
-    const subProductImage = await SubProductImage.findById(req.params.id); // <-- use 'id' instead of 'subProduct'
+    const subProductImage = await SubProductImage.findById(req.params.id);
 
     if (!subProductImage) {
       return res.status(404).json({
@@ -196,9 +198,17 @@ export const updateSubProductImage = async (req, res) => {
       });
     }
 
-    // Update only if image is different
+    // Update fields if they are provided
     if (image && image !== subProductImage.image) {
       subProductImage.image = image;
+    }
+
+    if (heading !== undefined) {
+      subProductImage.heading = heading;
+    }
+
+    if (description !== undefined) {
+      subProductImage.description = description;
     }
 
     await subProductImage.save();

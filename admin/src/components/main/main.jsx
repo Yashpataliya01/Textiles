@@ -8,7 +8,7 @@ const API_ORIGIN = "http://localhost:5000";
 const Main = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { categoryName, name } = location.state || {};
+  const { categoryName, categoryId } = location.state || {};
 
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -28,7 +28,7 @@ const Main = () => {
   const getData = async () => {
     try {
       const url = `${API_ORIGIN}/api/products/getProducts${
-        categoryName ? `?category=${encodeURIComponent(categoryName)}` : ""
+        categoryId ? `?category=${encodeURIComponent(categoryId)}` : ""
       }`;
 
       const res = await fetch(url);
