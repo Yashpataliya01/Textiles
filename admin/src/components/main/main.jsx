@@ -189,7 +189,7 @@ const Main = () => {
   return (
     <div className="home-container">
       <header className="header">
-        <h1>{name}</h1>
+        <h1>{categoryName}</h1>
         <div className="divider">
           <span className="dot" />
           <span className="dot" />
@@ -265,7 +265,7 @@ const Main = () => {
                   required
                 >
                   <option value="">--Select--</option>
-                  {categoryName === "00001" ? (
+                  {categoryName === "Suitings" ? (
                     <>
                       <option value="2/18 (MATTY)">2/18 (MATTY)</option>
                       <option value="TROVIN / TASHA">TROVIN / TASHA</option>
