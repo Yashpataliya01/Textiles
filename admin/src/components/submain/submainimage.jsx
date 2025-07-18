@@ -280,7 +280,6 @@ const SubMainImage = () => {
                       description: e.target.value,
                     }))
                   }
-                  required
                 />
               </div>
 
