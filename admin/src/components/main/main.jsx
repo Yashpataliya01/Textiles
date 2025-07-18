@@ -1,4 +1,3 @@
-// src/components/Main.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "./main.css";
@@ -20,7 +19,6 @@ const Main = () => {
     imageFile: null,
   });
 
-  // Fetch products once
   useEffect(() => {
     getData();
   }, []);
@@ -39,7 +37,6 @@ const Main = () => {
     }
   };
 
-  // Open modal for Add or Edit
   const openAdd = () => {
     setEditingId(null);
     setFormData({ name: "", description: "", imageFile: null });
@@ -56,7 +53,6 @@ const Main = () => {
     setShowForm(true);
   };
 
-  // Delete
   const handleDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
@@ -75,7 +71,6 @@ const Main = () => {
     }
   };
 
-  // Form input handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((p) => ({ ...p, [name]: value }));
@@ -85,15 +80,13 @@ const Main = () => {
     setFormData((p) => ({ ...p, imageFile: e.target.files[0] || null }));
   };
 
-  // Submit for both create & update
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading at the start
+    setLoading(true);
 
     try {
       let imageUrl = "";
 
-      // Step 1: Upload image to Cloudinary if selected
       if (formData.imageFile) {
         const cloudinaryData = new FormData();
         cloudinaryData.append("file", formData.imageFile);
@@ -118,12 +111,11 @@ const Main = () => {
         } catch (err) {
           console.error("Cloudinary Upload Error:", err);
           alert("Image upload failed: " + err.message);
-          setLoading(false); // Reset loading on error
+          setLoading(false);
           return;
         }
       }
 
-      // Step 2: Prepare product data for your backend
       const payload = {
         name: formData.name,
         description: formData.description,
@@ -152,19 +144,16 @@ const Main = () => {
 
       const saved = json.data;
 
-      // Update products state
       setProducts((prev) =>
         editingId
           ? prev.map((p) => (p._id === editingId ? saved : p))
           : [...prev, saved]
       );
 
-      // Reset form and close modal
       setShowForm(false);
       setEditingId(null);
       setFormData({ name: "", description: "", imageFile: null });
 
-      // Show success message
       alert(
         editingId
           ? "Product updated successfully!"
@@ -178,12 +167,11 @@ const Main = () => {
     }
   };
 
-  // Close modal handler
   const closeModal = () => {
     setShowForm(false);
     setEditingId(null);
     setFormData({ name: "", description: "", imageFile: null });
-    setLoading(false); // Reset loading when closing
+    setLoading(false);
   };
 
   return (
@@ -256,34 +244,13 @@ const Main = () => {
             <form onSubmit={handleSubmit} encType="multipart/form-data">
               <div className="form-group">
                 <label htmlFor="name">Name</label>
-                <select
+                <input
+                  type="text"
                   name="name"
-                  id="name"
-                  className="form_cetogory"
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                >
-                  <option value="">--Select--</option>
-                  {categoryName === "Suitings" ? (
-                    <>
-                      <option value="2/18 (MATTY)">2/18 (MATTY)</option>
-                      <option value="TROVIN / TASHA">TROVIN / TASHA</option>
-                      <option value="KHAKHI POLICE UNIFORM">
-                        KHAKHI POLICE UNIFORM
-                      </option>
-                      <option value="GABERDINE/ TWILL/ SERGE">
-                        GABERDINE/ TWILL/ SERGE
-                      </option>
-                      <option value="LYCRA COLLECTION">LYCRA COLLECTION</option>
-                      <option value="DESIGN TWILL">DESIGN TWILL</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="Shirting">Shirting</option>
-                    </>
-                  )}
-                </select>
+                />
               </div>
               <div className="form-group">
                 <label>Description:</label>

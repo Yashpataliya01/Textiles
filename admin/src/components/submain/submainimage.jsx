@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../home/home.css";
+import "./submain.css";
 
 const API_ORIGIN = import.meta.env.VITE_ENCODED_URL;
 
@@ -9,6 +10,7 @@ const SubMainImage = () => {
   const { categoryName, productId } = location.state || {};
 
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // Search input state
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -66,7 +68,6 @@ const SubMainImage = () => {
 
     let imageUrl = "";
 
-    // Upload image to Cloudinary if a new one is selected
     if (formData.imageFile) {
       const cloudinaryData = new FormData();
       cloudinaryData.append("file", formData.imageFile);
@@ -144,47 +145,62 @@ const SubMainImage = () => {
         <p className="tagline">Select a product or add a new one</p>
       </header>
 
+      {/* Search Bar */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search by heading..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
       <div className="cards-container">
-        {products?.map((prod) => {
-          const imgSrc = prod.image.startsWith("http")
-            ? prod.image
-            : `${API_ORIGIN}${prod.image}`;
-          return (
-            <div key={prod._id} className="card">
-              <div
-                className="card-image"
-                style={{ backgroundImage: `url(${imgSrc})` }}
-              />
-              <div className="card-content">
-                <h3>{prod.heading}</h3>
-                <p>{prod.description}</p>
-                <div className="card-buttons">
-                  <button
-                    className="edit-btn"
-                    onClick={() => {
-                      const p = products.find((p) => p._id === prod._id);
-                      setEditingId(prod._id);
-                      setFormData({
-                        imageFile: null,
-                        heading: p.heading || "",
-                        description: p.description || "",
-                      });
-                      setShowForm(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(prod._id)}
-                  >
-                    Delete
-                  </button>
+        {products
+          .filter((prod) =>
+            prod.heading.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map((prod) => {
+            const imgSrc = prod.image.startsWith("http")
+              ? prod.image
+              : `${API_ORIGIN}${prod.image}`;
+            return (
+              <div key={prod._id} className="card">
+                <div
+                  className="card-image"
+                  style={{ backgroundImage: `url(${imgSrc})` }}
+                />
+                <div className="card-content">
+                  <h3>{prod.heading}</h3>
+                  <p>{prod.description}</p>
+                  <div className="card-buttons">
+                    <button
+                      className="edit-btn"
+                      onClick={() => {
+                        const p = products.find((p) => p._id === prod._id);
+                        setEditingId(prod._id);
+                        setFormData({
+                          imageFile: null,
+                          heading: p.heading || "",
+                          description: p.description || "",
+                        });
+                        setShowForm(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(prod._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
 
         <div className="subcategory-card add-card" onClick={openAdd}>
           <div className="add-icon">+</div>
