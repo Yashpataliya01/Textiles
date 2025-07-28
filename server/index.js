@@ -8,7 +8,6 @@ import productRoutes from "./routes/productRoutes.js";
 import subProductRoutes from "./routes/subProductRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import galaryRoutes from "./routes/galaryRoutes.js";
-import functions from "firebase-functions";
 
 // Configuration
 dotenv.config();
