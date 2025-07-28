@@ -8,6 +8,7 @@ import productRoutes from "./routes/productRoutes.js";
 import subProductRoutes from "./routes/subProductRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import galaryRoutes from "./routes/galaryRoutes.js";
+import functions from "firebase-functions";
 
 // Configuration
 dotenv.config();
@@ -49,6 +50,10 @@ app.use((err, req, res, next) => {
         : "Internal server error",
   });
 });
+
+export const api = functions
+  .region("us-central1") // or change to asia-south1, europe-west1, etc.
+  .https.onRequest(app);
 
 // Start the server
 app.listen(PORT, () => {
